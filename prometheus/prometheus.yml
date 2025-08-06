@@ -15,16 +15,20 @@ scrape_configs:
       - targets: [ 'remote-ubuntu:9100' ]
 
   - job_name: 'event-producer'
+    metrics_path: /actuator/prometheus
     static_configs:
       - targets: [ 'event-producer:8090' ]
 
+
   - job_name: 'event-consumer'
+    metrics_path: /actuator/prometheus
     static_configs:
       - targets: [ 'event-consumer:8091' ]
 
   - job_name: 'event-public-api'
+    metrics_path: /actuator/prometheus
     static_configs:
-      - targets: [ 'public-api:8092' ]
+      - targets: [ 'event-public-api:8092' ]
 
   - job_name: 'postgres-exporter'
     static_configs:

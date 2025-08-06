@@ -1,15 +1,15 @@
 services:
-  remote-ubuntu:
-    build:
-      context: ./remote-ubuntu
-    container_name: remote-ubuntu
-    ports:
-      - "2222:22"
-      - "9100:9100"
-    networks:
-      - observability-network
-    volumes:
-      - remote-ubuntu-bin:/usr/local/bin
+#  remote-ubuntu:
+#    build:
+#      context: ./remote-ubuntu
+#    container_name: remote-ubuntu
+#    ports:
+#      - "2222:22"
+#      - "9100:9100"
+#    networks:
+#      - observability-network
+#    volumes:
+#      - remote-ubuntu-bin:/usr/local/bin
 
   prometheus:
     image: prom/prometheus:latest
@@ -52,6 +52,7 @@ services:
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_HEAP_SIZE: "512"
     networks:
       - observability-network
     healthcheck:
@@ -74,6 +75,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
     healthcheck:
       test: [ "CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list" ]
       interval: 10s
@@ -99,6 +101,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
     healthcheck:
       test: [ "CMD", "kafka-topics", "--bootstrap-server", "localhost:9093", "--list" ]
       interval: 10s
@@ -124,6 +127,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
     healthcheck:
       test: [ "CMD", "kafka-topics", "--bootstrap-server", "localhost:9094", "--list" ]
       interval: 10s
@@ -247,12 +251,54 @@ services:
       timeout: 5s
       retries: 5
 
+  event-producer:
+    image: event-producer:latest
+    container_name: event-producer
+    ports:
+      - "8090:8090"
+    build:
+      context: ./event-producer
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      kafka1:
+        condition: service_healthy
+      kafka2:
+        condition: service_healthy
+      kafka3:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
+    networks:
+      - observability-network
+
+  event-consumer:
+    image: event-consumer:latest
+    container_name: event-consumer
+    ports:
+      - "8091:8091"
+    build:
+      context: ./event-consumer
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
+      kafka1:
+        condition: service_healthy
+      event-producer:
+        condition: service_started
+    networks:
+      - observability-network
+
 networks:
   observability-network:
     driver: bridge
 
 volumes:
-  remote-ubuntu-bin:
+#  remote-ubuntu-bin:
   grafana-storage:
   kafka1_data:
   kafka2_data:
