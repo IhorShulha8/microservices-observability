@@ -18,6 +18,7 @@ event:
     interval-ms: 1000
 
 management:
+  port: 8090
   endpoints:
     web:
       exposure:
@@ -29,3 +30,10 @@ management:
   endpoint:
     prometheus:
       enabled: true
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+    otlp:
+      endpoint: http://alloy:4318
+      protocol: http/protobuf

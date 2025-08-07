@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version "$springBootVersion"
     id 'io.spring.dependency-management' version "$springDependencyManagementVersion"
-    id "com.github.davidmc24.gradle.plugin.avro" version "$avroPluginVersion"
 
 }
 group = "dev.ihorshulha"
@@ -19,21 +18,11 @@ repositories {
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter"
     implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "io.micrometer:micrometer-registry-prometheus"
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    implementation"org.springframework.kafka:spring-kafka:$springKafkaVersion"
-    implementation "io.confluent:kafka-avro-serializer:$kafkaAvroSerializerVersion"
-    implementation "org.postgresql:postgresql"
-
+    implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation "net.logstash.logback:logstash-logback-encoder:$logstashVersion"
 
     implementation "io.opentelemetry:opentelemetry-exporter-otlp"
     implementation "io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter:$opentelemetrySpringBootVersion"
-}
-
-avro {
-    createSetters = true
-    fieldVisibility = 'PRIVATE'
 }

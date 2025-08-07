@@ -1,8 +1,8 @@
 global:
   scrape_interval: 15s
 
-rule_files:
-  - "alert.rules.yml"
+#rule_files:
+#  - "alert.rules.yml"
 
 scrape_configs:
 
@@ -10,15 +10,14 @@ scrape_configs:
     static_configs:
       - targets: [ 'prometheus:9090' ]
 
-  - job_name: 'remote-ubuntu-node'
-    static_configs:
-      - targets: [ 'remote-ubuntu:9100' ]
+#  - job_name: 'remote-ubuntu-node'
+#    static_configs:
+#      - targets: [ 'remote-ubuntu:9100' ]
 
   - job_name: 'event-producer'
     metrics_path: /actuator/prometheus
     static_configs:
       - targets: [ 'event-producer:8090' ]
-
 
   - job_name: 'event-consumer'
     metrics_path: /actuator/prometheus

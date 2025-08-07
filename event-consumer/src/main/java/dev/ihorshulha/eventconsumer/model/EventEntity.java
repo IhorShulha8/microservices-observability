@@ -9,12 +9,9 @@ import jakarta.persistence.Id;
 public class EventEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String uid;
     private String subject;
     private String description;
-
 
     public String getUid() {
         return uid;
@@ -40,4 +37,12 @@ public class EventEntity {
         this.description = description;
     }
 
+    @Override
+    public String toString() {
+        return "EventEntity{" +
+                "uid='" + uid + '\'' +
+                ", subject='" + subject + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
