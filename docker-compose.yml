@@ -1,15 +1,15 @@
 services:
-#  remote-ubuntu:
-#    build:
-#      context: ./remote-ubuntu
-#    container_name: remote-ubuntu
-#    ports:
-#      - "2222:22"
-#      - "9100:9100"
-#    networks:
-#      - observability-network
-#    volumes:
-#      - remote-ubuntu-bin:/usr/local/bin
+  remote-ubuntu:
+    build:
+      context: ./remote-ubuntu
+    container_name: remote-ubuntu
+    ports:
+      - "2222:22"
+      - "9100:9100"
+    networks:
+      - observability-network
+    volumes:
+      - remote-ubuntu-bin:/usr/local/bin
 
   prometheus:
     image: prom/prometheus:latest
@@ -423,7 +423,7 @@ networks:
     driver: bridge
 
 volumes:
-#  remote-ubuntu-bin:
+  remote-ubuntu-bin:
   grafana-storage:
   kafka1_data:
   kafka2_data:
